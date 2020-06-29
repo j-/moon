@@ -1,8 +1,5 @@
 import * as React from 'react';
-import moonSrc from './moon.jpg';
-
-const moonImage = new Image();
-moonImage.src = moonSrc;
+import { drawMoon } from './draw-moon'
 
 const PI = Math.PI;
 const TAU = PI * 2;
@@ -23,67 +20,19 @@ export interface Props {
 const MoonCanvas: React.FC<Props> = ({ angle, fraction }) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
-  const draw = React.useCallback(() => {
+  React.useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const { width, height } = canvas;
-    canvas.width = width;
-    const radius = Math.min(width, height) / 2;
-    const size = radius * 2;
-    // Center on midpoint
-    ctx.translate(width / 2, height / 2);
-    // Shrink from edges
-    ctx.scale(0.9, 0.9);
-    // Crop as circle
-    ctx.beginPath();
-    ctx.arc(0, 0, radius, 0, TAU);
-    ctx.closePath();
-    ctx.clip();
-    // Draw upright moon
-    ctx.rotate(PI);
-    ctx.drawImage(moonImage, -radius, -radius, size, size);
-    ctx.rotate(-PI);
-    // Darken it
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
-    ctx.fillRect(-radius, -radius, size, size);
-    // Rotate so that 0 degrees is straight up
-    ctx.rotate(-PI / 2);
-    // Draw light part of moon
-    ctx.save();
-    ctx.rotate(angle);
-    const w = 2 * radius * (fraction - 0.5);
-    let start = PI * 1/2;
-    let end = PI * 3/2;
-    if (fraction < 0.5) [start, end] = [end, start];
-    ctx.beginPath();
-    ctx.ellipse(0, 0, Math.abs(w), radius, 0, start, end);
-    ctx.arc(0, 0, radius, end, start, fraction < 0.5);
-    ctx.closePath();
-    ctx.clip();
-    ctx.rotate(-angle + PI / 2);
-    ctx.rotate(PI);
-    ctx.drawImage(moonImage, -radius, -radius, size, size);
-    ctx.rotate(-PI);
-    ctx.restore();
-    // Draw border
-    ctx.beginPath();
-    ctx.arc(0, 0, radius, 0, TAU);
-    ctx.lineWidth = 5;
-    ctx.stroke();
+    drawMoon(ctx, {
+      width,
+      height,
+      angle,
+      fraction,
+    });
   }, [angle, fraction]);
-
-  // Draw whenever props change
-  React.useEffect(() => {
-    draw();
-  }, [angle, draw, fraction]);
-
-  // Redraw when moon image loads
-  React.useEffect(() => {
-    moonImage.addEventListener('load', draw);
-    return () => moonImage.removeEventListener('load', draw);
-  });
 
   return <canvas width={500} height={500} ref={canvasRef} />;
 };
