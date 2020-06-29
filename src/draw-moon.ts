@@ -1,8 +1,5 @@
 import moonSrc from './moon.jpg';
 
-const moonImage = new Image();
-moonImage.src = moonSrc;
-
 const PI = Math.PI;
 const TAU = PI * 2;
 
@@ -37,6 +34,10 @@ export interface DrawMoonOptions {
    * moon).
    */
   fraction: number;
+  /**
+   * Custom moon image.
+   */
+  imageSrc?: string;
 }
 
 export interface DrawMoon {
@@ -48,7 +49,10 @@ export const drawMoon: DrawMoon = async (ctx, {
   height,
   angle,
   fraction,
+  imageSrc = moonSrc,
 }) => {
+  const moonImage = new Image();
+  moonImage.src = imageSrc;
   await loadImage(moonImage);
   ctx.save();
   const radius = Math.min(width, height) / 2;

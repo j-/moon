@@ -15,9 +15,13 @@ export interface Props {
    * moon).
    */
   fraction: number;
+  /**
+   * Image to use for the moon's surface.
+   */
+  imageSrc?: string;
 }
 
-const MoonCanvas: React.FC<Props> = ({ angle, fraction }) => {
+const MoonCanvas: React.FC<Props> = ({ angle, fraction, imageSrc }) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
   React.useEffect(() => {
@@ -31,8 +35,9 @@ const MoonCanvas: React.FC<Props> = ({ angle, fraction }) => {
       height,
       angle,
       fraction,
+      imageSrc,
     });
-  }, [angle, fraction]);
+  }, [angle, fraction, imageSrc]);
 
   return <canvas width={500} height={500} ref={canvasRef} />;
 };

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { withKnobs, number  } from '@storybook/addon-knobs';
+import { withKnobs, number, files } from '@storybook/addon-knobs';
 import MoonCanvas from './MoonCanvas';
 
 export default {
@@ -22,5 +22,6 @@ export const DummyValues = () => (
       max: 1,
       step: 0.01,
     })}
+    imageSrc={files('Image', 'image/*')[0]}
   />
 );
