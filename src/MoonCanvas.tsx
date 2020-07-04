@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { drawMoon } from './draw-moon'
 
-const PI = Math.PI;
-const TAU = PI * 2;
-
 export interface Props {
   /**
    * Midpoint angle in radians of the illuminated limb of the moon reckoned
@@ -16,12 +13,16 @@ export interface Props {
    */
   fraction: number;
   /**
+   * Angle in radians moon is rotated based on perspective.
+   */
+  moonOrientation: number;
+  /**
    * Image to use for the moon's surface.
    */
   imageSrc?: string;
 }
 
-const MoonCanvas: React.FC<Props> = ({ angle, fraction, imageSrc }) => {
+const MoonCanvas: React.FC<Props> = ({ angle, fraction, moonOrientation, imageSrc }) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
   React.useEffect(() => {
@@ -30,14 +31,18 @@ const MoonCanvas: React.FC<Props> = ({ angle, fraction, imageSrc }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const { width, height } = canvas;
+    ctx.save();
+    ctx.clearRect(0, 0, width, height);
     drawMoon(ctx, {
       width,
       height,
       angle,
       fraction,
+      moonOrientation,
       imageSrc,
     });
-  }, [angle, fraction, imageSrc]);
+    ctx.restore();
+  }, [angle, fraction, moonOrientation, imageSrc]);
 
   return <canvas width={500} height={500} ref={canvasRef} />;
 };

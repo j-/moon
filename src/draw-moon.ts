@@ -35,6 +35,10 @@ export interface DrawMoonOptions {
    */
   fraction: number;
   /**
+   * Amount of rotation applied to the moon surface image in radians.
+   */
+  moonOrientation: number;
+  /**
    * Custom moon image.
    */
   imageSrc?: string;
@@ -49,6 +53,7 @@ export const drawMoon: DrawMoon = async (ctx, {
   height,
   angle,
   fraction,
+  moonOrientation,
   imageSrc = moonSrc,
 }) => {
   const moonImage = new Image();
@@ -67,9 +72,9 @@ export const drawMoon: DrawMoon = async (ctx, {
   ctx.closePath();
   ctx.clip();
   // Draw upright moon
-  ctx.rotate(HALF_TURN);
+  ctx.rotate(moonOrientation);
   ctx.drawImage(moonImage, -radius, -radius, size, size);
-  ctx.rotate(-HALF_TURN);
+  ctx.rotate(-moonOrientation);
   // Darken it
   ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
   ctx.fillRect(-radius, -radius, size, size);
@@ -88,9 +93,9 @@ export const drawMoon: DrawMoon = async (ctx, {
   ctx.closePath();
   ctx.clip();
   ctx.rotate(-angle + QUARTER_TURN);
-  ctx.rotate(HALF_TURN);
+  ctx.rotate(moonOrientation);
   ctx.drawImage(moonImage, -radius, -radius, size, size);
-  ctx.rotate(-HALF_TURN);
+  ctx.rotate(-moonOrientation);
   ctx.restore();
   // Draw border
   ctx.beginPath();

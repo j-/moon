@@ -10,6 +10,12 @@ export default {
 
 export const DummyValues = () => (
   <MoonCanvas
+    moonOrientation={number('Orientation (rads)', -Math.PI, {
+      range: true,
+      min: -Math.PI,
+      max: Math.PI,
+      step: 0.01,
+    })}
     angle={number('Angle (rads)', -1.17, {
       range: true,
       min: -Math.PI,
